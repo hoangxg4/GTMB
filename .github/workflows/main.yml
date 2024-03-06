@@ -69,7 +69,7 @@ jobs:
             const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
 
             const octokit = new Octokit({
-              auth: `token ${process.env.MY_OTHER_TOKEN}`
+              auth: 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
             });
 
             await octokit.codespaces.delete({
