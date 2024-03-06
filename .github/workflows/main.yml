@@ -19,14 +19,14 @@ jobs:
         run: npm install @octokit/rest
       
       - name: Keep Codespace Running
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.MY_OTHER_TOKEN }}
-          script: |
-            const octokit = require("@octokit/rest")({
-              auth: process.env.MY_OTHER_TOKEN,
-            });
-            const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
-            if (response.data.length > 0) {
-              await (octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' }));
-            }
+        run: |
+          import { Octokit } from "@octokit/rest";
+
+          const octokit = new Octokit({
+            auth: process.env.MY_OTHER_TOKEN,
+          });
+
+          const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+          if (response.data.length > 0) {
+            await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+          }
