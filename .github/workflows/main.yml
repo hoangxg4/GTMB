@@ -9,11 +9,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Start codespace
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest");
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
             const octokit = new Octokit({
               auth: `token ${process.env.MY_OTHER_TOKEN}`
             });
@@ -30,7 +37,8 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest");
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
             const octokit = new Octokit({
               auth: `token ${process.env.MY_OTHER_TOKEN}`
             });
@@ -58,7 +66,8 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest");
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
             const octokit = new Octokit({
               auth: `token ${process.env.MY_OTHER_TOKEN}`
             });
