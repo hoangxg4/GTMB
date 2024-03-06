@@ -20,7 +20,7 @@ jobs:
       
       - name: Keep Codespace Running
         run: |
-          import { Octokit } from "@octokit/rest";
+          const { Octokit } = require("@octokit/rest");
 
           const octokit = new Octokit({
             auth: process.env.MY_OTHER_TOKEN,
