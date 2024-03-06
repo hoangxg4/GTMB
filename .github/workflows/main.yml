@@ -28,4 +28,5 @@ jobs:
             });
             const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
             if (response.data.length > 0) {
-              await octokit.codespaces.un**⬤**
+              await (octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' }));
+            }
