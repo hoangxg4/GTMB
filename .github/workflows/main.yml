@@ -2,8 +2,8 @@ name: Run my custom codespace
 
 on:
   # Replace with your desired trigger, e.g., push to specific branch
-  # push:
-  #   branches: [ main ]
+  push:
+   branches: [ main ]
 
 jobs:
   run-my-codespace:
