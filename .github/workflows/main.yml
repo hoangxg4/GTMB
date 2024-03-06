@@ -1,0 +1,24 @@
+name: Keep Codespace Running
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  keep_running:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Keep Codespace Running
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.MY_OTHER_TOKEN }}
+          script: |
+            const Octokit = require("@octokit/rest");
+            const octokit = new Octokit({
+              auth: process.env.MY_OTHER_TOKEN,
+            });
+            const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            if (response.data.length > 0) {
+              await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            }
