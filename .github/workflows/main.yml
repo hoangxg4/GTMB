@@ -1,38 +1,22 @@
-name: Keep Codespace Running
-
+name: Start Codespace on File Update
 on:
   push:
-    branches:
-      - main
+    paths:
+      - '**/*'
 
 jobs:
-  keep_running:
+  start-codespace:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install @octokit/rest
-        run: npm install @octokit/rest
-      
-      - name: Keep Codespace Running
-        uses: actions/github-script@v5
-        with:
-          script: |
-            const { Octokit } = require("@octokit/rest");
-            const octokit = new Octokit({
-              auth: process.env.MY_OTHER_TOKEN,
-            });
-            try {
-              const response = await octokit.codespaces.listForAuthenticatedUser();
-              if (response.data.length > 0) {
-                // Codespace is running
-                console.log("Codespace is running");
-              } else {
-                // Codespace is suspended
-                console.log("Codespace is suspended");
-                // Uncomment the following line to unsuspend the Codespace
-                // await octokit.request('POST /codespaces/{codespace_id}/unsuspend', { codespace_id: 'YOUR_CODESPACE_ID' });
-              }
-            } catch (error) {
-              console.error("Error:", error.message);
-              process.exit(1);
-            }
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Start Codespace
+      run: |
+        # Here goes the script to start Codespace using GitHub REST API
+        # Example:
+        # curl -X POST \
+        #   -H "Authorization: token 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" \
+        #   -H "Accept: application/vnd.github.v3+json" \
+        #   -d '{"ref":"main","repository":"Gemini-Telegram-Bot"}' \
+        #   https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/actions/workflows/your_workflow_name/dispatches
