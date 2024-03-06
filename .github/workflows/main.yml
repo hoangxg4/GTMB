@@ -1,11 +1,12 @@
-name: Run codespace 24/7
+name: Run my custom codespace
 
 on:
-  schedule:
-    - cron: '0 * * * *'
+  # Replace with your desired trigger, e.g., push to specific branch
+  # push:
+  #   branches: [ main ]
 
 jobs:
-  run-codespace:
+  run-my-codespace:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,16 +14,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: npm install @octokit/rest
+        run: npm install @octokit/rest@^20.0.2  # Install with version
 
       - name: Start codespace
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+            const { Octokit } = require("@octokit/rest");
 
             const octokit = new Octokit({
-              auth: `token ${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}`
+              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
             });
 
             const response = await octokit.codespaces.create({
@@ -37,10 +38,10 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+            const { Octokit } = require("@octokit/rest");
 
             const octokit = new Octokit({
-              auth: `token ${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}`
+              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
             });
 
             const response = await octokit.codespaces.get({
@@ -57,19 +58,18 @@ jobs:
             console.log("Codespace is ready!");
 
       - name: Run your code
+        # Replace with your actual code to be executed in the codespace
         run: |
-          # Thay thế lệnh này bằng lệnh bạn muốn chạy trong codespace
-
-          echo "Hello, world!"
+          echo "Hello, this is my custom code!"
 
       - name: Stop codespace
         uses: actions/github-script@v3
         with:
           script: |
-            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+            const { Octokit } = require("@octokit/rest");
 
             const octokit = new Octokit({
-              auth: `token ${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}`
+              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
             });
 
             await octokit.codespaces.delete({
