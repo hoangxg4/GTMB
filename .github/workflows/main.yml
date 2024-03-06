@@ -22,9 +22,15 @@ jobs:
               auth: process.env.MY_OTHER_TOKEN,
             });
             try {
-              const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+              const response = await octokit.codespaces.listForAuthenticatedUser();
               if (response.data.length > 0) {
-                await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+                // Codespace is running
+                console.log("Codespace is running");
+              } else {
+                // Codespace is suspended
+                console.log("Codespace is suspended");
+                // Uncomment the following line to unsuspend the Codespace
+                // await octokit.request('POST /codespaces/{codespace_id}/unsuspend', { codespace_id: 'YOUR_CODESPACE_ID' });
               }
             } catch (error) {
               console.error("Error:", error.message);
