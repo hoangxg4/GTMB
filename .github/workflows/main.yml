@@ -10,16 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install Node.js and dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+          
+      - name: Install @octokit/rest
+        run: npm install @octokit/rest
+      
       - name: Keep Codespace Running
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.MY_OTHER_TOKEN }}
           script: |
-            const Octokit = require("@octokit/rest");
-            const octokit = new Octokit({
+            const octokit = require("@octokit/rest")({
               auth: process.env.MY_OTHER_TOKEN,
             });
             const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
             if (response.data.length > 0) {
-              await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
-            }
+              await octokit.codespaces.un**⬤**
