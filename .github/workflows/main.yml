@@ -1,22 +1,18 @@
-name: Start Codespace on File Update
+name: Update URL
+
 on:
   push:
     paths:
       - '**/*'
 
 jobs:
-  start-codespace:
+  update_url:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Start Codespace
-      run: |
-        # Here goes the script to start Codespace using GitHub REST API
-        # Example:
-        # curl -X POST \
-        #   -H "Authorization: token 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" \
-        #   -H "Accept: application/vnd.github.v3+json" \
-        #   -d '{"ref":"main","repository":"Gemini-Telegram-Bot"}' \
-        #   https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/actions/workflows/your_workflow_name/dispatches
+      - name: Call URL
+        run: |
+          curl -X GET https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv \
+          -H "Authorization: token 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"
