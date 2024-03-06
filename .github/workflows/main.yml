@@ -22,11 +22,16 @@ jobs:
         run: |
           const { Octokit } = require("@octokit/rest");
 
-          const octokit = new Octokit({
-            auth: process.env.MY_OTHER_TOKEN,
-          });
+          try {
+            const octokit = new Octokit({
+              auth: process.env.MY_OTHER_TOKEN,
+            });
 
-          const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
-          if (response.data.length > 0) {
-            await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            if (response.data.length > 0) {
+              await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            }
+          } catch (error) {
+            console.error("Error:", error.message);
+            process.exit(1);
           }
