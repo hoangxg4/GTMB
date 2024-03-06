@@ -1,24 +1,70 @@
-name: Keep Codespace Running
+name: Run codespace 24/7
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: '0 * * * *'
 
 jobs:
-  keep_running:
+  run-codespace:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Keep Codespace Running
-        uses: actions/github-script@v5
+      - name: Start codespace
+        uses: actions/github-script@v3
         with:
-          github-token: ${{ secrets.MY_OTHER_TOKEN }}
           script: |
-            const Octokit = require("@octokit/rest");
+            const { Octokit } = require("@octokit/rest");
             const octokit = new Octokit({
-              auth: process.env.MY_OTHER_TOKEN,
+              auth: `token ${process.env.MY_OTHER_TOKEN}`
             });
-            const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
-            if (response.data.length > 0) {
-              await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+
+            const response = await octokit.codespaces.create({
+              repository: "Gemini-Telegram-Bot",
+              ref: "main",
+              location: "us-east1"
+            });
+
+            console.log(`Codespace URL: ${response.data.url}`);
+
+      - name: Wait for codespace to be ready
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({
+              auth: `token ${process.env.MY_OTHER_TOKEN}`
+            });
+
+            const response = await octokit.codespaces.get({
+              codespace_id: `${response.data.id}`
+            });
+
+            while (response.data.status !== "ready") {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              response = await octokit.codespaces.get({
+                codespace_id: `${response.data.id}`
+              });
             }
+
+            console.log("Codespace is ready!");
+
+      - name: Run your code
+        run: |
+          # Thay thế lệnh này bằng lệnh bạn muốn chạy trong codespace
+
+          echo "Hello, world!"
+
+      - name: Stop codespace
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({
+              auth: `token ${process.env.MY_OTHER_TOKEN}`
+            });
+
+            await octokit.codespaces.delete({
+              codespace_id: `${response.data.id}`
+            });
+
+            console.log("Codespace stopped!");
