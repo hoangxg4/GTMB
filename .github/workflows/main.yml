@@ -1,0 +1,79 @@
+name: Run codespace 24/7
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  run-codespace:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install @octokit/rest
+
+      - name: Start codespace
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
+            const octokit = new Octokit({
+              auth: `token ${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}`
+            });
+
+            const response = await octokit.codespaces.create({
+              repository: "Gemini-Telegram-Bot",
+              ref: "main",
+              location: "us-east1"
+            });
+
+            console.log(`Codespace URL: ${response.data.url}`);
+
+      - name: Wait for codespace to be ready
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
+            const octokit = new Octokit({
+              auth: `token ${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}`
+            });
+
+            const response = await octokit.codespaces.get({
+              codespace_id: `${response.data.id}`
+            });
+
+            while (response.data.status !== "ready") {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              response = await octokit.codespaces.get({
+                codespace_id: `${response.data.id}`
+              });
+            }
+
+            console.log("Codespace is ready!");
+
+      - name: Run your code
+        run: |
+          # Thay thế lệnh này bằng lệnh bạn muốn chạy trong codespace
+
+          echo "Hello, world!"
+
+      - name: Stop codespace
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { Octokit } = require("@octokit/rest@^20.0.2");  # Specify version here
+
+            const octokit = new Octokit({
+              auth: `token ${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}`
+            });
+
+            await octokit.codespaces.delete({
+              codespace_id: `${response.data.id}`
+            });
+
+            console.log("Codespace stopped!");
