@@ -1,79 +1,24 @@
-name: Run my custom codespace
+name: Keep Codespace Running
 
 on:
-  # Replace with your desired trigger, e.g., push to specific branch
-  push:
-   branches: [ main ]
+  schedule:
+    - cron: "0 * * * *"
 
 jobs:
-  run-my-codespace:
+  keep_running:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: npm install @octokit/rest  # Install with version
-
-      - name: Start codespace
-        uses: actions/github-script@v3
+      - name: Keep Codespace Running
+        uses: actions/github-script@v5
         with:
+          github-token: ${{ secrets.MY_OTHER_TOKEN }}
           script: |
-            const { Octokit } = require("@octokit/rest");
-
+            const Octokit = require("@octokit/rest");
             const octokit = new Octokit({
-              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
+              auth: process.env.MY_OTHER_TOKEN,
             });
-
-            const response = await octokit.codespaces.create({
-              repository: "Gemini-Telegram-Bot",
-              ref: "main",
-              location: "us-east1"
-            });
-
-            console.log(`Codespace URL: ${response.data.url}`);
-
-      - name: Wait for codespace to be ready
-        uses: actions/github-script@v3
-        with:
-          script: |
-            const { Octokit } = require("@octokit/rest");
-
-            const octokit = new Octokit({
-              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
-            });
-
-            const response = await octokit.codespaces.get({
-              codespace_id: `${response.data.id}`
-            });
-
-            while (response.data.status !== "ready") {
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              response = await octokit.codespaces.get({
-                codespace_id: `${response.data.id}`
-              });
+            const response = await octokit.codespaces.getSuspended({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
+            if (response.data.length > 0) {
+              await octokit.codespaces.unsuspend({ owner: 'thanhtayt', repo: 'Gemini-Telegram-Bot' });
             }
-
-            console.log("Codespace is ready!");
-
-      - name: Run your code
-        # Replace with your actual code to be executed in the codespace
-        run: |
-          echo "Hello, this is my custom code!"
-
-      - name: Stop codespace
-        uses: actions/github-script@v3
-        with:
-          script: |
-            const { Octokit } = require("@octokit/rest");
-
-            const octokit = new Octokit({
-              auth: `token ${{ secrets.MY_OTHER_TOKEN }}`
-            });
-
-            await octokit.codespaces.delete({
-              codespace_id: `${response.data.id}`
-            });
-
-            console.log("Codespace stopped!");
