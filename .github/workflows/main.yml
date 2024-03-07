@@ -17,7 +17,7 @@ jobs:
       id: get_codespace_id
       run: |
         CODESPACE_URL="https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv"
-        CODESPACE_ID=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "$CODESPACE_URL" | jq -r '.codespace_id')
+        CODESPACE_ID=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "$CODESPACE_URL" | jq -r '.id')
         echo "::set-output name=codespace_id::$CODESPACE_ID"
 
     - name: Restart Codespace
@@ -28,4 +28,4 @@ jobs:
           -H "Authorization: token ${{ secrets.my_custom_pat }}" \
           -H "Accept: application/vnd.github.v3+json" \
           -d '{"force_restart": true}' \
-          "https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/codespaces/$CODESPACE_ID/restart"
+          "https://api.github.com/codespaces/$CODESPACE_ID/restart"
