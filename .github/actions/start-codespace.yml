@@ -1,5 +1,0 @@
-name: 'Start Codespace'
-description: 'Starts a Codespace'
-runs:
-  using: 'node12'
-  main: 'start-codespace.js'
