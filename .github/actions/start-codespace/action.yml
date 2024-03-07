@@ -1,0 +1,5 @@
+name: Start Codespace
+description: This action starts a GitHub Codespace
+runs:
+  using: "node12"
+  main: "index.js"
