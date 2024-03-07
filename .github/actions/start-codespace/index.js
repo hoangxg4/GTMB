@@ -8,11 +8,14 @@ async function startCodespace(token) {
     if (codespaces.length === 0) {
       await octokit.request('POST /user/codespaces');
       console.log('Codespace started successfully!');
+      return 'Codespace started successfully!';
     } else {
       console.log('Codespace is already running.');
+      return 'Codespace is already running.';
     }
   } catch (error) {
     console.error('Error starting Codespace:', error.message);
+    return `Error starting Codespace: ${error.message}`;
   }
 }
 
