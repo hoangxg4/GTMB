@@ -1,4 +1,4 @@
-name: Update URL
+name: Start Codespace on File Update
 
 on:
   push:
@@ -6,13 +6,20 @@ on:
       - '**/*'
 
 jobs:
-  update_url:
+  start-codespace:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Call URL
-        run: |
-          curl -X GET https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv \
-          -u thanhtayt:11042006Ff@
+      - name: Start Codespace
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.my_custom_pat }}
+          script: |
+            const { data: codespaces } = await github.request('GET /user/codespaces')
+            if (codespaces.length === 0) {
+              await github.request('POST /user/codespaces')
+            } else {
+              console.log('Codespace already exists.')
+            }
