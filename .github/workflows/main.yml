@@ -15,12 +15,12 @@ jobs:
       run: |
         CODESPACE_URL="https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv"
         CODESPACE_NAME=$(basename "$CODESPACE_URL")
-        echo "CODESPACE_NAME=$CODESPACE_NAME" >> $GITHUB_ENV
+        echo "::set-output name=codespace_name::$CODESPACE_NAME"
 
     - name: Restart Codespace
       if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Chỉ chạy khi push vào branch main
       run: |
-        CODESPACE_NAME="${{ env.CODESPACE_NAME }}"
+        CODESPACE_NAME="${{ steps.get_codespace_name.outputs.codespace_name }}"
         CODESPACE_ID=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/user/codespaces" | jq -r --arg CODESPACE_NAME "$CODESPACE_NAME" '.codespaces[] | select(.name == $CODESPACE_NAME) | .id')
         if [ -n "$CODESPACE_ID" ]; then
           curl -X POST \
