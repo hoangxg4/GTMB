@@ -1,0 +1,24 @@
+name: Run Codespace on File Update
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Start Codespace
+      run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.my_custom_pat }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/codespaces
