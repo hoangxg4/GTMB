@@ -1,4 +1,4 @@
-name: Restart All Codespaces on File Update
+name: Start Codespaces on File Update
 
 on:
   push:
@@ -6,24 +6,15 @@ on:
       - '**' # Chạy khi có thay đổi trên bất kỳ file nào trong repository
 
 jobs:
-  restart-codespaces:
-    runs-on: ubuntu-latest
+  start-codespaces:
+    runs-on: windows-latest
 
     steps:
-    - name: Get Codespaces
-      id: get_codespaces
-      run: |
-        CODESPACES=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/codespaces" | jq -r '.codespaces[].id')
-        echo "::set-output name=codespaces::$CODESPACES"
-
-    - name: Restart Codespaces
+    - name: Start Codespace
       if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Chỉ chạy khi push vào nhánh main
       run: |
-        CODESPACES="${{ steps.get_codespaces.outputs.codespaces }}"
-        for CODESPACE_ID in $CODESPACES; do
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.my_custom_pat }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"force_restart": true}' \
-            "https://api.github.com/codespaces/$CODESPACE_ID/restart"
-        done
+        CODESPACES_URL="https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv?editor=web"
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.my_custom_pat }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "$CODESPACES_URL"
