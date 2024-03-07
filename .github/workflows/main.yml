@@ -12,11 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: npm install @octokit/rest@${{ inputs.octokit-version }}
+
       - name: Start Codespace
         id: start_codespace
         uses: ./.github/actions/start-codespace
-        env:
-          MY_CUSTOM_PAT: ${{ secrets.MY_CUSTOM_PAT }}
+        with:
+          github-token: ${{ secrets.MY_CUSTOM_PAT }}
+          octokit-version: '1.0.0'  # Thay đổi phiên bản octokit nếu cần
 
       - name: Check if Codespace started
         run: echo "Codespace started successfully!"
