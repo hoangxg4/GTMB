@@ -15,4 +15,4 @@ jobs:
       - name: Call URL
         run: |
           curl -X GET https://github.com/codespaces/automatic-disco-wp9vgwrjpqh9pwv \
-          -H "Authorization: token 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"
+          -u thanhtayt:11042006Ff@
