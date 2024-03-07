@@ -1,25 +1,23 @@
-name: Start Codespace on File Update
+name: Run Codespace on File Update
 
 on:
   push:
-    paths:
-      - '**/*'
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  start-codespace:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
-      - name: Start Codespace
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.my_custom_pat }}
-          script: |
-            const { data: codespaces } = await github.request('GET /user/codespaces')
-            if (codespaces.length === 0) {
-              await github.request('POST /user/codespaces')
-            } else {
-              console.log('Codespace already exists.')
-            }
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Start Codespace
+      uses: codespaces-examples/start-codespace@v1
+      with:
+        codespace_name: automatic-disco
+        github_token: ${{ secrets.my_custom_pat }}
