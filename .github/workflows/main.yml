@@ -1,4 +1,4 @@
-name: Restart Codespace on File Update
+name: Restart All Codespaces on File Update
 
 on:
   push:
@@ -6,28 +6,24 @@ on:
       - '**' # Chạy khi có thay đổi trên bất kỳ file nào trong repository
 
 jobs:
-  restart-codespace:
+  restart-codespaces:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get Codespace Name
-      id: get_codespace_name
+    - name: Get Codespaces
+      id: get_codespaces
       run: |
-        CODESPACE_URL="https://automatic-disco-wp9vgwrjpqh9pwv.github.dev/"
-        CODESPACE_NAME=$(basename "$CODESPACE_URL")
-        echo "::set-output name=codespace_name::$CODESPACE_NAME"
+        CODESPACES=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/codespaces" | jq -r '.codespaces[].id')
+        echo "::set-output name=codespaces::$CODESPACES"
 
-    - name: Restart Codespace
+    - name: Restart Codespaces
       if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Chỉ chạy khi push vào nhánh main
       run: |
-        CODESPACE_NAME="${{ steps.get_codespace_name.outputs.codespace_name }}"
-        CODESPACE_ID=$(curl -sL -H "Authorization: token ${{ secrets.my_custom_pat }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/user/codespaces" | jq -r --arg CODESPACE_NAME "$CODESPACE_NAME" '.codespaces[] | select(.name == $CODESPACE_NAME) | .id')
-        if [ -n "$CODESPACE_ID" ]; then
+        CODESPACES="${{ steps.get_codespaces.outputs.codespaces }}"
+        for CODESPACE_ID in $CODESPACES; do
           curl -X POST \
             -H "Authorization: token ${{ secrets.my_custom_pat }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"force_restart": true}' \
             "https://api.github.com/codespaces/$CODESPACE_ID/restart"
-        else
-          echo "Không tìm thấy Codespace với tên '$CODESPACE_NAME'"
-        fi
+        done
