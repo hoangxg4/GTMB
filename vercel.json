@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/main.py": {
+      "environment": {
+        "TELEGRAM_BOT_API_KEY": "6896549861:AAGxHHQV608MzzANxTdlN4eEiWyzuHx4DV8",
+        "GEMINI_API_KEYS": "AIzaSyDbLitZUUL4MznVhulWOr8cOyOvuZCr2Y8"
+      }
+    }
+  }
+}
