@@ -3,3 +3,10 @@ description: This action starts a GitHub Codespace
 runs:
   using: "node12"
   main: "index.js"
+inputs:
+  github-token:
+    description: 'GitHub Token'
+    required: true
+  octokit-version:
+    description: 'Octokit version'
+    required: true
