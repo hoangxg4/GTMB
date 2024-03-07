@@ -1,8 +1,9 @@
-name: Start Codespace Hourly
+name: Start Codespace on File Update
 
 on:
-  schedule:
-    - cron: '0 * * * *' # Chạy vào phút 0 của mỗi giờ
+  push:
+    paths:
+      - '**' # Sẽ chạy khi có thay đổi trên bất kỳ file nào trong repository
 
 jobs:
   build:
@@ -13,8 +14,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Start Codespace
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Chỉ chạy khi push vào branch main
       run: |
         curl -X POST \
           -H "Authorization: token ${{ secrets.my_custom_pat }}" \
           -H "Accept: application/vnd.github.v3+json" \
+          -d '{"name": "automatic disco"}' \
           https://api.github.com/repos/thanhtayt/Gemini-Telegram-Bot/codespaces
