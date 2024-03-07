@@ -22,19 +22,6 @@ jobs:
         run: npm install @octokit/rest
 
       - name: Start Codespace
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.MY_CUSTOM_PAT }}  # Sử dụng secret mới này
-          script: |
-            const octokit = require('@octokit/rest')();
-            octokit.authenticate({
-              type: 'token',
-              token: process.env.MY_CUSTOM_PAT,  // Sử dụng biến môi trường này
-            });
-            const { data: codespaces } = await octokit.request('GET /user/codespaces');
-            if (codespaces.length === 0) {
-              await octokit.request('POST /user/codespaces');
-              console.log('Codespace started successfully!');
-            } else {
-              console.log('Codespace is already running.');
-            }
+        run: node start-codespace.js
+        env:
+          MY_CUSTOM_PAT: ${{ secrets.MY_CUSTOM_PAT }}  # Sử dụng secret mới này
