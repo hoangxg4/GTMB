@@ -1,21 +1,32 @@
-name: Codespaces
+name: Start Codespace on Push
 
 on:
   push:
     branches:
-      - main
+      - main  # Thay đổi tên nhánh nếu cần
 
 jobs:
-  build:
+  start-codespace:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Codespaces
-      uses: actions/setup-codespaces@v1
-
-    - name: Build and Deploy
-      run: |
-        # Thêm các bước cần được thực hiện để biên dịch và triển khai ứng dụng của bạn ở đây
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Start Codespace
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.MY_CUSTOM_PAT }}  # Sử dụng secret mới này
+          script: |
+            const octokit = require('@octokit/rest')();
+            octokit.authenticate({
+              type: 'token',
+              token: process.env.MY_CUSTOM_PAT,  // Sử dụng biến môi trường này
+            });
+            const { data: codespaces } = await octokit.request('GET /user/codespaces');
+            if (codespaces.length === 0) {
+              await octokit.request('POST /user/codespaces');
+              console.log('Codespace started successfully!');
+            } else {
+              console.log('Codespace is already running.');
+            }
