@@ -19,4 +19,4 @@ jobs:
       run: /home/runner/.fly/bin/flyctl auth login
 
     - name: Deploy to Fly.io
-      run: /home/runner/.fly/bin/flyctl launch
+      run: /home/runner/.fly/bin/flyctl deploy
