@@ -1,10 +1,10 @@
 app = "gtmb"
 build = { }
-primary_region = "sing"
+primary_region = "lax"
 
 [http_service]
-auto_start_machines = true
-auto_stop_machines = true
+auto_start_machines = false
+auto_stop_machines = false
 force_https = true
 internal_port = 8_080
 min_machines_running = 0
