@@ -1,3 +1,5 @@
 pyTelegramBotAPI==4.14.0
 google-generativeai
 aiohttp
+Flask==2.0.2
+Werkzeug==2.0.2
