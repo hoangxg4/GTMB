@@ -6,7 +6,6 @@ import re
 import telebot
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import  Message
-from flask import Flask
 
 
 generation_config = {
@@ -37,8 +36,6 @@ safety_settings = [
 error_info="⚠️⚠️⚠️\nSomething went wrong !\nplease try to change your prompt or contact the admin !"
 before_generate_info="🤖Generating🤖"
 download_pic_notify="🤖Loading picture🤖"
-
-app = Flask(__name__)
 
 def find_all_index(str, pattern):
     index_list = [0]
@@ -310,10 +307,5 @@ async def main():
     print("Starting Gemini_Telegram_Bot.")
     await bot.polling(none_stop=True)
 
-@app.route('/')
-def hello():
-    return 'Hello'
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
     asyncio.run(main())
