@@ -6,7 +6,6 @@ import re
 import telebot
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import  Message
-from flask import Flask
 
 generation_config = {
     "temperature": 0.1,
@@ -306,12 +305,7 @@ async def main():
     # Start bot
     print("Starting Gemini_Telegram_Bot.")
     await bot.polling(none_stop=True)
-app = Flask(__name__)
 
-@app.route('/')
-def hello():
-    return 'Hello'
 
 if __name__ == '__main__':
     asyncio.run(main())
-    app.run(host='0.0.0.0')
